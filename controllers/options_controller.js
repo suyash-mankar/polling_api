@@ -29,12 +29,15 @@ module.exports.create = async function (req, res) {
 
       question.options.push(option);
       question.save();
-      console.log(question);
-    }
 
-    return res.status(200).json({
-      message: "Option created successfully",
-    });
+      return res.status(200).json({
+        message: "Option created successfully",
+      });
+    } else {
+      return res.status(404).json({
+        message: "Question not found",
+      });
+    }
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -45,7 +48,11 @@ module.exports.create = async function (req, res) {
 
 module.exports.delete = async function (req, res) {
   try {
-    await Option.deleteOne({ _id: req.params.id });
+    let option = await Option.findOne({ _id: req.params.id });
+    let question = await Question.findByIdAndUpdate(option.question, {
+      $pull: { options: option },
+    });
+    option.remove();
 
     return res.status(200).json({
       message: "Option deleted successfully",
