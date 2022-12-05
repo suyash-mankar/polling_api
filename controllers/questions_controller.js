@@ -51,3 +51,19 @@ module.exports.delete = async function (req, res) {
     });
   }
 };
+
+module.exports.view = async function (req, res) {
+  try {
+    let question = await Question.findById(req.params.id);
+    
+    return res.status(200).json({
+      question: question,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};

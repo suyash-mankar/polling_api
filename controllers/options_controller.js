@@ -65,3 +65,20 @@ module.exports.delete = async function (req, res) {
     });
   }
 };
+
+module.exports.addVote = async function (req, res) {
+  try {
+    let option = await Option.findOne({ _id: req.params.id });
+    option.votes = option.votes + 1;
+    option.save();
+
+    return res.status(200).json({
+      message: "Vote added successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
