@@ -1,5 +1,6 @@
 const Counter = require("../models/counter");
 const Question = require("../models/question");
+const Option = require("../models/option");
 
 module.exports.create = async function (req, res) {
   try {
@@ -35,7 +36,9 @@ module.exports.create = async function (req, res) {
 
 module.exports.delete = async function (req, res) {
   try {
-    await Question.deleteOne({ _id: req.params.id });
+    let question = await Question.findById(req.params.id);
+    let option = await Option.deleteMany({ question: question._id });
+    question.remove();
 
     return res.status(200).json({
       message: "Question deleted successfully",
