@@ -16,7 +16,11 @@ const optionSchema = new mongoose.Schema(
     },
     link_to_vote: {
       type: String,
-      // required: true,
+      required: true,
+    },
+    question: {
+      type: mongoose.Schema.Types.Mixed,
+      ref: "Question",
     },
   },
   {

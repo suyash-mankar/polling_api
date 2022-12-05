@@ -12,7 +12,7 @@ const questionSchema = new mongoose.Schema(
     },
     options: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed,
         ref: "Option",
       },
     ],
