@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const optionSchema = new mongoose.Schema(
   {
+    _id: {
+      type: Number,
+      required: true,
+    },
     text: {
       type: String,
       required: true,
@@ -10,13 +14,16 @@ const optionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    link_to_vote: {
+      type: String,
+      // required: true,
+    },
   },
   {
-    //crated at and updated at what time/date
     timestamps: true,
   }
 );
 
-const Option = mongoose.model("Question", optionSchema);
+const Option = mongoose.model("Option", optionSchema);
 
 module.exports = Option;

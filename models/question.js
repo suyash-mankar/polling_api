@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema(
   {
+    _id: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -14,7 +18,6 @@ const questionSchema = new mongoose.Schema(
     ],
   },
   {
-    //crated at and updated at what time/date
     timestamps: true,
   }
 );

@@ -1,3 +1,50 @@
-module.exports.create = function (req, res) {
-  return res.end("<h1> working bro </h1>");
+const Counter = require("../models/counter");
+const Question = require("../models/question");
+
+module.exports.create = async function (req, res) {
+  try {
+    let counter = await Counter.findOneAndUpdate(
+      { id: "questionCounter" },
+      { $inc: { seq: 1 } },
+      { new: true }
+    );
+
+    if (counter === null) {
+      counter = await Counter.create({
+        id: "questionCounter",
+        seq: 1,
+      });
+    }
+
+    await Question.create({
+      _id: counter.seq,
+      title: req.body.title,
+    });
+
+    return res.status(200).json({
+      message: "Question created successfully",
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+module.exports.delete = async function (req, res) {
+  try {
+    await Question.deleteOne({ _id: req.params.id });
+
+    return res.status(200).json({
+      message: "Question deleted successfully",
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
