@@ -37,15 +37,29 @@ module.exports.create = async function (req, res) {
 module.exports.delete = async function (req, res) {
   try {
     let question = await Question.findById(req.params.id);
-    let option = await Option.deleteMany({ question: question._id });
-    question.remove();
 
-    return res.status(200).json({
-      message: "Question deleted successfully",
+    let canDeleteQuestion = true;
+
+    question.options.forEach((option) => {
+      if (option.votes !== 0) {
+        canDeleteQuestion = false;
+      }
     });
+
+    if (canDeleteQuestion) {
+      let option = await Option.deleteMany({ question: question._id });
+      question.remove();
+      return res.status(200).json({
+        message: "Question Deleted Successfully",
+      });
+    } else {
+      return res.status(200).json({
+        message:
+          "Question can't be deleted as one of its options contain votes",
+      });
+    }
   } catch (err) {
     console.log(err);
-
     return res.status(500).json({
       message: "Internal Server Error",
     });
@@ -55,7 +69,7 @@ module.exports.delete = async function (req, res) {
 module.exports.view = async function (req, res) {
   try {
     let question = await Question.findById(req.params.id);
-    
+
     return res.status(200).json({
       question: question,
     });

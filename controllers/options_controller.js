@@ -1,6 +1,7 @@
 const Option = require("../models/option");
 const Question = require("../models/question");
 const Counter = require("../models/counter");
+const { options } = require("../routes/questions");
 
 module.exports.create = async function (req, res) {
   try {
@@ -52,7 +53,14 @@ module.exports.delete = async function (req, res) {
     let question = await Question.findByIdAndUpdate(option.question, {
       $pull: { options: option },
     });
-    option.remove();
+
+    if (option.votes === 0) {
+      option.remove();
+    } else {
+      return res.status(200).json({
+        message: "Option cant be deleted as it contain votes",
+      });
+    }
 
     return res.status(200).json({
       message: "Option deleted successfully",
@@ -71,6 +79,13 @@ module.exports.addVote = async function (req, res) {
     let option = await Option.findOne({ _id: req.params.id });
     option.votes = option.votes + 1;
     option.save();
+
+    // update votes in the question model also
+    const query = { _id: option.question, "options._id": option._id };
+    const updateDocument = {
+      $set: { "options.$.votes": option.votes },
+    };
+    const result = await Question.updateOne(query, updateDocument);
 
     return res.status(200).json({
       message: "Vote added successfully",
