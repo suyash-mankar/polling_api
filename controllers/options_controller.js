@@ -1,19 +1,22 @@
 const Option = require("../models/option");
 const Question = require("../models/question");
 const Counter = require("../models/counter");
-const { options } = require("../routes/questions");
 
+// create option
 module.exports.create = async function (req, res) {
   try {
+    // find the question
     let question = await Question.findOne({ _id: req.params.id });
 
     if (question) {
+      // find and update the counter
       let counter = await Counter.findOneAndUpdate(
         { id: "optionCounter" },
         { $inc: { seq: 1 } },
         { new: true }
       );
 
+      // id counter is null, set the initial values
       if (counter === null) {
         counter = await Counter.create({
           id: "optionCounter",
@@ -21,6 +24,7 @@ module.exports.create = async function (req, res) {
         });
       }
 
+      // create option with id as counter sequence
       let option = await Option.create({
         _id: counter.seq,
         text: req.body.text,
@@ -28,6 +32,7 @@ module.exports.create = async function (req, res) {
         question: question,
       });
 
+      // add the option in the question model also
       question.options.push(option);
       question.save();
 
@@ -47,14 +52,18 @@ module.exports.create = async function (req, res) {
   }
 };
 
+// delete option
 module.exports.delete = async function (req, res) {
   try {
+    // find the option
     let option = await Option.findOne({ _id: req.params.id });
+    // delete the option from the question model
     let question = await Question.findByIdAndUpdate(option.question, {
       $pull: { options: option },
     });
-
+    // if the option has no votes
     if (option.votes === 0) {
+      // delete the option
       option.remove();
     } else {
       return res.status(200).json({
@@ -74,9 +83,12 @@ module.exports.delete = async function (req, res) {
   }
 };
 
+// add vote to an option
 module.exports.addVote = async function (req, res) {
   try {
+    // find the option
     let option = await Option.findOne({ _id: req.params.id });
+    // add vote
     option.votes = option.votes + 1;
     option.save();
 
