@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-mongoose.connect(`mongodb://localhost:27017/polling_api`);
+mongoose.connect(
+  `mongodb+srv://suyashmankar:${process.env.MONGODB_ATLAS_PASS}@cluster0.di1mgma.mongodb.net/?retryWrites=true&w=majority`
+);
 
 const db = mongoose.connection;
 
