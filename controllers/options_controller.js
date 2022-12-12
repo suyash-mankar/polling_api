@@ -57,12 +57,13 @@ module.exports.delete = async function (req, res) {
   try {
     // find the option
     let option = await Option.findOne({ _id: req.params.id });
-    // delete the option from the question model
-    let question = await Question.findByIdAndUpdate(option.question, {
-      $pull: { options: option },
-    });
+
     // if the option has no votes
     if (option.votes === 0) {
+      // delete the option from the question model
+      let question = await Question.findByIdAndUpdate(option.question, {
+        $pull: { options: option },
+      });
       // delete the option
       option.remove();
     } else {
