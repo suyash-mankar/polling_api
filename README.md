@@ -19,6 +19,7 @@ An API based polling system where users can post any question with different opt
 - Fork the Project in your Repository.
 - Clone the Forked Repository in your Local System.
 - Install & Configure - NodeJS, MongoDB, Postman.
+- Change the url in "/config/mongoose" to "mongodb://localhost:27017/polling_api"
 - Run 'npm install' in GitBash Terminal
 - Go to 'package.json' & inside the 'SCRIPTS', find "start":"...." <br/>
   Change it to - "start": "nodemon index.js",
