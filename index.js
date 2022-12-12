@@ -11,7 +11,7 @@ app.set("views", "./views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/", require("./routes"));
+app.use(`${process.env.BASE_URL}/`, require("./routes"));
 
 app.listen(port, function (err) {
   if (err) {

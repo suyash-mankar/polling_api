@@ -3,9 +3,9 @@ const router = express.Router();
 
 const homeController = require("../controllers/home_controller");
 
-router.get(`${process.env.BASE_URL}/`, homeController.home);
+router.get("/", homeController.home);
 
-router.use(`${process.env.BASE_URL}/questions`, require("./questions"));
-router.use(`${process.env.BASE_URL}/options`, require("./options"));
+router.use("/questions", require("./questions"));
+router.use("/options", require("./options"));
 
 module.exports = router;
